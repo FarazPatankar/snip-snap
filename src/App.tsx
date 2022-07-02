@@ -1,9 +1,13 @@
-const App = () => {
+import { AppShell } from "@mantine/core";
+import { Sidebar } from "./components/Sidebar";
+
+function Demo() {
   return (
-    <div>
-      <h1>Hello, world!</h1>
-    </div>
-  )
+    <AppShell padding="md" navbar={<Sidebar />}>
+      {/* Your application here */}
+      Hello World
+    </AppShell>
+  );
 }
 
-export default App;
+export default Demo;
