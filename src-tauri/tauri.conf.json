@@ -12,7 +12,10 @@
   },
   "tauri": {
     "allowlist": {
-      "all": true
+      "all": true,
+      "fs": {
+        "scope": ["$DESKTOP/**"]
+      }
     },
     "bundle": {
       "active": true,
