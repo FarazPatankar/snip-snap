@@ -6,6 +6,7 @@ import {
   Center,
   Container,
   createStyles,
+  Group,
   Image,
   Stack,
 } from "@mantine/core";
@@ -13,6 +14,7 @@ import { writeBinaryFile, BaseDirectory } from "@tauri-apps/api/fs";
 
 import { Dropzone } from "./components/Dropzone";
 import { Sidebar } from "./components/Sidebar";
+import { DEFAULT_PADDING } from "./lib/config";
 
 const useStyles = createStyles(theme => {
   return {
@@ -30,7 +32,7 @@ const App = () => {
   const wrapper = useRef<HTMLDivElement | null>(null);
   const [initialImage, setInitialImage] = useState<null | string>(null);
 
-  const [padding, setPadding] = useState("lg");
+  const [padding, setPadding] = useState(DEFAULT_PADDING as string);
 
   const onSave = async () => {
     if (wrapper.current == null) {
@@ -61,14 +63,16 @@ const App = () => {
                 ref={wrapper}
                 p={padding}
                 style={{
-                  backgroundColor: "red",
-                  // flex: 1,
+                  background: "linear-gradient(to right, #16bffd, #cb3066)",
                 }}
               >
                 <Image src={initialImage} />
               </Container>
             </Center>
-            <Button onClick={onSave}>Save</Button>
+            <Group>
+              <Button onClick={() => setInitialImage(null)}>Reset</Button>
+              <Button onClick={onSave}>Save</Button>
+            </Group>
           </>
         ) : (
           <Center className={classes.container}>
