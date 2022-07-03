@@ -5,6 +5,7 @@ import {
   Code,
   createStyles,
   Group,
+  MantineNumberSize,
   Navbar,
   Stack,
   Text,
@@ -14,6 +15,7 @@ import {
   PADDING_OPTIONS,
   GRADIENT_OPTIONS,
   DefaultImageStyles,
+  RADIUS_OPTIONS,
 } from "../lib/config";
 import { CheckIcon } from "./Icons";
 
@@ -73,9 +75,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
               size="xs"
               color="pink"
               variant="outline"
-              value={imageStyles.padding}
+              value={imageStyles.padding.toString()}
               onChange={value =>
-                setImageStyles({ ...imageStyles, padding: value as string })
+                setImageStyles({
+                  ...imageStyles,
+                  padding: value as MantineNumberSize,
+                })
               }
             >
               {PADDING_OPTIONS.map(value => (
@@ -102,6 +107,28 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 </Center>
               ))}
             </Group>
+          </Stack>
+
+          <Stack spacing="xs">
+            <Text className={classes.sectionTitle}>Rounded corners</Text>
+            <Chips
+              size="xs"
+              color="pink"
+              variant="outline"
+              value={imageStyles.radius.toString()}
+              onChange={value =>
+                setImageStyles({
+                  ...imageStyles,
+                  radius: value as MantineNumberSize,
+                })
+              }
+            >
+              {RADIUS_OPTIONS.map(value => (
+                <Chip key={value} value={value}>
+                  {value}
+                </Chip>
+              ))}
+            </Chips>
           </Stack>
         </Stack>
       </Navbar.Section>

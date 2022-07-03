@@ -74,7 +74,7 @@ const App = () => {
                   background: imageStyles.gradient,
                 }}
               >
-                <Image src={initialImage} />
+                <Image radius={imageStyles.radius} src={initialImage} />
               </Container>
             </Center>
             <Group>

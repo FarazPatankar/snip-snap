@@ -1,7 +1,10 @@
-import { MANTINE_SIZES } from "@mantine/core";
+import { MantineNumberSize, MANTINE_SIZES } from "@mantine/core";
 
 export const PADDING_OPTIONS = MANTINE_SIZES;
 export const DEFAULT_PADDING = PADDING_OPTIONS[2];
+
+export const RADIUS_OPTIONS = MANTINE_SIZES;
+export const DEFAULT_RADIUS = PADDING_OPTIONS[2];
 
 export const GRADIENT_OPTIONS = [
   "linear-gradient(120deg, #fccb90 0%, #d57eeb 100%)",
@@ -12,12 +15,14 @@ export const GRADIENT_OPTIONS = [
 ];
 export const DEFAULT_GRADIENT = GRADIENT_OPTIONS[0];
 
-export const DEFAULT_IMAGE_STYLES = {
+export const DEFAULT_IMAGE_STYLES: DefaultImageStyles = {
   padding: DEFAULT_PADDING,
   gradient: DEFAULT_GRADIENT,
+  radius: DEFAULT_RADIUS,
 };
 
 export interface DefaultImageStyles {
-  padding: string;
+  padding: MantineNumberSize;
+  radius: MantineNumberSize;
   gradient: string;
 }
