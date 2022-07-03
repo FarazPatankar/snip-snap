@@ -5,6 +5,7 @@ import {
   Code,
   createStyles,
   Group,
+  Kbd,
   MantineNumberSize,
   Navbar,
   Stack,
@@ -16,7 +17,8 @@ import {
   GRADIENT_OPTIONS,
   DefaultImageStyles,
   RADIUS_OPTIONS,
-} from "../lib/config";
+  KEYBINDINGS,
+} from "../lib/constants";
 import { CheckIcon } from "./Icons";
 
 const useStyles = createStyles(theme => {
@@ -46,6 +48,11 @@ const useStyles = createStyles(theme => {
       boxShadow:
         "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
     },
+    kbd: {
+      height: 20,
+      width: 20,
+      paddingTop: 0,
+    },
   };
 });
 
@@ -70,7 +77,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </Group>
 
           <Stack spacing="xs">
-            <Text className={classes.sectionTitle}>Padding</Text>
+            <Group spacing="xs">
+              <Text className={classes.sectionTitle}>Padding</Text>
+              <Kbd className={classes.kbd}>{KEYBINDINGS.togglePadding}</Kbd>
+            </Group>
             <Chips
               size="xs"
               color="pink"
@@ -92,25 +102,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </Stack>
 
           <Stack spacing="xs">
-            <Text className={classes.sectionTitle}>Background</Text>
-            <Group>
-              {GRADIENT_OPTIONS.map(value => (
-                <Center
-                  key={value}
-                  className={classes.gradientContainer}
-                  sx={{ background: value }}
-                  onClick={() =>
-                    setImageStyles({ ...imageStyles, gradient: value })
-                  }
-                >
-                  {value === imageStyles.gradient && <CheckIcon />}
-                </Center>
-              ))}
+            <Group spacing="xs">
+              <Text className={classes.sectionTitle}>Radius</Text>
+              <Kbd className={classes.kbd}>{KEYBINDINGS.toggleRadius}</Kbd>
             </Group>
-          </Stack>
-
-          <Stack spacing="xs">
-            <Text className={classes.sectionTitle}>Rounded corners</Text>
             <Chips
               size="xs"
               color="pink"
@@ -129,6 +124,27 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 </Chip>
               ))}
             </Chips>
+          </Stack>
+
+          <Stack spacing="xs">
+            <Group spacing="xs">
+              <Text className={classes.sectionTitle}>Background</Text>
+              <Kbd className={classes.kbd}>{KEYBINDINGS.toggleBackground}</Kbd>
+            </Group>
+            <Group>
+              {GRADIENT_OPTIONS.map(value => (
+                <Center
+                  key={value}
+                  className={classes.gradientContainer}
+                  sx={{ background: value }}
+                  onClick={() =>
+                    setImageStyles({ ...imageStyles, gradient: value })
+                  }
+                >
+                  {value === imageStyles.gradient && <CheckIcon />}
+                </Center>
+              ))}
+            </Group>
           </Stack>
         </Stack>
       </Navbar.Section>

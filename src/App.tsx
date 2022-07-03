@@ -8,6 +8,8 @@ import {
   createStyles,
   Group,
   Image,
+  MantineNumberSize,
+  MANTINE_SIZES,
   Stack,
 } from "@mantine/core";
 import { writeBinaryFile, BaseDirectory } from "@tauri-apps/api/fs";
@@ -16,10 +18,13 @@ import { Dropzone } from "./components/Dropzone";
 import { Sidebar } from "./components/Sidebar";
 import {
   DefaultImageStyles,
-  DEFAULT_GRADIENT,
   DEFAULT_IMAGE_STYLES,
-  DEFAULT_PADDING,
-} from "./lib/config";
+  GRADIENT_OPTIONS,
+  KEYBINDINGS,
+  PADDING_OPTIONS,
+  RADIUS_OPTIONS,
+} from "./lib/constants";
+import { useHotkeys } from "@mantine/hooks";
 
 const useStyles = createStyles(theme => {
   return {
@@ -34,11 +39,61 @@ const useStyles = createStyles(theme => {
 
 const App = () => {
   const { classes } = useStyles();
+
   const wrapper = useRef<HTMLDivElement | null>(null);
   const [initialImage, setInitialImage] = useState<null | string>(null);
 
   const [imageStyles, setImageStyles] =
     useState<DefaultImageStyles>(DEFAULT_IMAGE_STYLES);
+
+  const toggleProperty = ({
+    collection,
+    key,
+    value,
+  }: {
+    collection: string[] | typeof MANTINE_SIZES;
+    key: string;
+    value: string | MantineNumberSize;
+  }) => {
+    const currentIndex = collection.indexOf(value as any);
+    const nextIndex =
+      currentIndex + 1 === collection.length ? 0 : currentIndex + 1;
+
+    setImageStyles({
+      ...imageStyles,
+      [key]: collection[nextIndex] as MantineNumberSize,
+    });
+  };
+
+  useHotkeys([
+    [
+      KEYBINDINGS.togglePadding,
+      () =>
+        toggleProperty({
+          collection: PADDING_OPTIONS,
+          key: "padding",
+          value: imageStyles.padding,
+        }),
+    ],
+    [
+      KEYBINDINGS.toggleRadius,
+      () =>
+        toggleProperty({
+          collection: RADIUS_OPTIONS,
+          key: "radius",
+          value: imageStyles.radius,
+        }),
+    ],
+    [
+      KEYBINDINGS.toggleBackground,
+      () =>
+        toggleProperty({
+          collection: GRADIENT_OPTIONS,
+          key: "gradient",
+          value: imageStyles.gradient,
+        }),
+    ],
+  ]);
 
   const onSave = async () => {
     if (wrapper.current == null) {
@@ -77,9 +132,11 @@ const App = () => {
                 <Image radius={imageStyles.radius} src={initialImage} />
               </Container>
             </Center>
-            <Group>
+            <Group position="apart">
               <Button onClick={() => setInitialImage(null)}>Reset</Button>
-              <Button onClick={onSave}>Save</Button>
+              <Group>
+                <Button onClick={onSave}>Save</Button>
+              </Group>
             </Group>
           </>
         ) : (

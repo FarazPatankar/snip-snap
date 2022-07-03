@@ -26,3 +26,9 @@ export interface DefaultImageStyles {
   radius: MantineNumberSize;
   gradient: string;
 }
+
+export const KEYBINDINGS = {
+  togglePadding: "P",
+  toggleRadius: "R",
+  toggleBackground: "B",
+};
