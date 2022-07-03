@@ -1,12 +1,32 @@
 import { useRef, useState } from "react";
 import domtoimage from "dom-to-image";
-import { AppShell, Button, Center, Container, Image } from "@mantine/core";
+import {
+  AppShell,
+  Button,
+  Center,
+  Container,
+  createStyles,
+  Image,
+  Stack,
+} from "@mantine/core";
 import { writeBinaryFile, BaseDirectory } from "@tauri-apps/api/fs";
 
 import { Dropzone } from "./components/Dropzone";
 import { Sidebar } from "./components/Sidebar";
 
+const useStyles = createStyles(theme => {
+  return {
+    container: {
+      height: "100%",
+    },
+    imageContainer: {
+      flex: 1,
+    },
+  };
+});
+
 const App = () => {
+  const { classes } = useStyles();
   const wrapper = useRef<HTMLDivElement | null>(null);
   const [initialImage, setInitialImage] = useState<null | string>(null);
 
@@ -33,24 +53,29 @@ const App = () => {
       padding="md"
       navbar={<Sidebar padding={padding} setPadding={setPadding} />}
     >
-      <Center inline={false} style={{ height: "100%", width: "100%" }}>
+      <Stack className={classes.container}>
         {initialImage ? (
           <>
-            <Container
-              ref={wrapper}
-              p={padding}
-              style={{
-                backgroundColor: "red",
-              }}
-            >
-              <Image src={initialImage} />
-            </Container>
+            <Center className={classes.imageContainer}>
+              <Container
+                ref={wrapper}
+                p={padding}
+                style={{
+                  backgroundColor: "red",
+                  // flex: 1,
+                }}
+              >
+                <Image src={initialImage} />
+              </Container>
+            </Center>
             <Button onClick={onSave}>Save</Button>
           </>
         ) : (
-          <Dropzone setImage={setInitialImage} />
+          <Center className={classes.container}>
+            <Dropzone setImage={setInitialImage} />
+          </Center>
         )}
-      </Center>
+      </Stack>
     </AppShell>
   );
 };
