@@ -11,3 +11,13 @@ export const GRADIENT_OPTIONS = [
   "linear-gradient(to right, #92fe9d 0%, #00c9ff 100%)",
 ];
 export const DEFAULT_GRADIENT = GRADIENT_OPTIONS[0];
+
+export const DEFAULT_IMAGE_STYLES = {
+  padding: DEFAULT_PADDING,
+  gradient: DEFAULT_GRADIENT,
+};
+
+export interface DefaultImageStyles {
+  padding: string;
+  gradient: string;
+}

@@ -10,7 +10,11 @@ import {
   Text,
   Title,
 } from "@mantine/core";
-import { PADDING_OPTIONS, GRADIENT_OPTIONS } from "../lib/config";
+import {
+  PADDING_OPTIONS,
+  GRADIENT_OPTIONS,
+  DefaultImageStyles,
+} from "../lib/config";
 import { CheckIcon } from "./Icons";
 
 const useStyles = createStyles(theme => {
@@ -44,16 +48,12 @@ const useStyles = createStyles(theme => {
 });
 
 interface SidebarProps {
-  padding: string;
-  setPadding: React.Dispatch<React.SetStateAction<string>>;
-  gradient: string;
-  setGradient: React.Dispatch<React.SetStateAction<string>>;
+  imageStyles: DefaultImageStyles;
+  setImageStyles: React.Dispatch<React.SetStateAction<DefaultImageStyles>>;
 }
 export const Sidebar: React.FC<SidebarProps> = ({
-  padding,
-  setPadding,
-  gradient,
-  setGradient,
+  imageStyles,
+  setImageStyles,
 }) => {
   const { classes } = useStyles();
   return (
@@ -73,8 +73,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
               size="xs"
               color="pink"
               variant="outline"
-              value={padding}
-              onChange={value => setPadding(value as string)}
+              value={imageStyles.padding}
+              onChange={value =>
+                setImageStyles({ ...imageStyles, padding: value as string })
+              }
             >
               {PADDING_OPTIONS.map(value => (
                 <Chip key={value} value={value}>
@@ -92,9 +94,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   key={value}
                   className={classes.gradientContainer}
                   sx={{ background: value }}
-                  onClick={() => setGradient(value)}
+                  onClick={() =>
+                    setImageStyles({ ...imageStyles, gradient: value })
+                  }
                 >
-                  {value === gradient && <CheckIcon />}
+                  {value === imageStyles.gradient && <CheckIcon />}
                 </Center>
               ))}
             </Group>
