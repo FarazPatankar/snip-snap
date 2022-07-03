@@ -1,4 +1,5 @@
 import {
+  Center,
   Chip,
   Chips,
   Code,
@@ -9,7 +10,8 @@ import {
   Text,
   Title,
 } from "@mantine/core";
-import { PADDING_OPTIONS } from "../lib/config";
+import { PADDING_OPTIONS, GRADIENT_OPTIONS } from "../lib/config";
+import { CheckIcon } from "./Icons";
 
 const useStyles = createStyles(theme => {
   return {
@@ -30,14 +32,29 @@ const useStyles = createStyles(theme => {
       fontSize: theme.fontSizes.xs,
       textTransform: "uppercase",
     },
+    gradientContainer: {
+      color: theme.white,
+      height: 24,
+      width: 24,
+      borderRadius: 12,
+      boxShadow:
+        "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
+    },
   };
 });
 
 interface SidebarProps {
   padding: string;
   setPadding: React.Dispatch<React.SetStateAction<string>>;
+  gradient: string;
+  setGradient: React.Dispatch<React.SetStateAction<string>>;
 }
-export const Sidebar: React.FC<SidebarProps> = ({ padding, setPadding }) => {
+export const Sidebar: React.FC<SidebarProps> = ({
+  padding,
+  setPadding,
+  gradient,
+  setGradient,
+}) => {
   const { classes } = useStyles();
   return (
     <Navbar width={{ base: 300 }} p="md" className={classes.navbar}>
@@ -65,6 +82,22 @@ export const Sidebar: React.FC<SidebarProps> = ({ padding, setPadding }) => {
                 </Chip>
               ))}
             </Chips>
+          </Stack>
+
+          <Stack spacing="xs">
+            <Text className={classes.sectionTitle}>Background</Text>
+            <Group>
+              {GRADIENT_OPTIONS.map(value => (
+                <Center
+                  key={value}
+                  className={classes.gradientContainer}
+                  sx={{ background: value }}
+                  onClick={() => setGradient(value)}
+                >
+                  {value === gradient && <CheckIcon />}
+                </Center>
+              ))}
+            </Group>
           </Stack>
         </Stack>
       </Navbar.Section>

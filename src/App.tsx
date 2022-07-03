@@ -14,7 +14,7 @@ import { writeBinaryFile, BaseDirectory } from "@tauri-apps/api/fs";
 
 import { Dropzone } from "./components/Dropzone";
 import { Sidebar } from "./components/Sidebar";
-import { DEFAULT_PADDING } from "./lib/config";
+import { DEFAULT_GRADIENT, DEFAULT_PADDING } from "./lib/config";
 
 const useStyles = createStyles(theme => {
   return {
@@ -33,6 +33,7 @@ const App = () => {
   const [initialImage, setInitialImage] = useState<null | string>(null);
 
   const [padding, setPadding] = useState(DEFAULT_PADDING as string);
+  const [gradient, setGradient] = useState(DEFAULT_GRADIENT);
 
   const onSave = async () => {
     if (wrapper.current == null) {
@@ -53,7 +54,14 @@ const App = () => {
   return (
     <AppShell
       padding="md"
-      navbar={<Sidebar padding={padding} setPadding={setPadding} />}
+      navbar={
+        <Sidebar
+          padding={padding}
+          setPadding={setPadding}
+          gradient={gradient}
+          setGradient={setGradient}
+        />
+      }
     >
       <Stack className={classes.container}>
         {initialImage ? (
@@ -63,7 +71,7 @@ const App = () => {
                 ref={wrapper}
                 p={padding}
                 style={{
-                  background: "linear-gradient(to right, #16bffd, #cb3066)",
+                  background: gradient,
                 }}
               >
                 <Image src={initialImage} />
