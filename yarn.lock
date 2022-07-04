@@ -393,7 +393,7 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
-"@mantine/core@^5.0.0":
+"@mantine/core@5.0.0-alpha.19":
   version "5.0.0-alpha.19"
   resolved "https://registry.yarnpkg.com/@mantine/core/-/core-5.0.0-alpha.19.tgz#153ad428f628bb2e48f150f010e87c39b12e8330"
   integrity sha512-Q8xnek1ZUN69ZMYqsbH9kozSkPa47GYF7c6YdGfX+oaPTYPXcXE0sEEVDSYEdvnRULzZHVb34s/1ClKCLYpZaw==
@@ -404,7 +404,7 @@
     "@radix-ui/react-scroll-area" "0.1.4"
     react-textarea-autosize "8.3.4"
 
-"@mantine/dropzone@^5.0.0":
+"@mantine/dropzone@5.0.0-alpha.19":
   version "5.0.0-alpha.19"
   resolved "https://registry.yarnpkg.com/@mantine/dropzone/-/dropzone-5.0.0-alpha.19.tgz#91f21cb3f8c4c15fa24714ee48da53929b368483"
   integrity sha512-D2pQFByq3NAdHLXAIJTZY22H/38Sp2A5GByNibHI72RwJPf/Bo2K0RVjly1dvRRzB/1/aCt2wlZDQ5tPKXASFw==
@@ -412,7 +412,7 @@
     "@mantine/utils" "5.0.0-alpha.19"
     react-dropzone "14.2.1"
 
-"@mantine/hooks@^5.0.0":
+"@mantine/hooks@5.0.0-alpha.19":
   version "5.0.0-alpha.19"
   resolved "https://registry.yarnpkg.com/@mantine/hooks/-/hooks-5.0.0-alpha.19.tgz#57f984c89daf8acaf442372e010a829da3cc5dd9"
   integrity sha512-yiiTGhLlgVtZX+2aLwR6/t2oN9cqlL+1wVlx3MSTbQwZTXSj8v/ioj0nm1gqGqRF5FqfRVRXBGghfLq/GDiG5w==

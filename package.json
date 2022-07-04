@@ -9,9 +9,9 @@
     "tauri": "tauri"
   },
   "dependencies": {
-    "@mantine/core": "^5.0.0",
-    "@mantine/dropzone": "^5.0.0",
-    "@mantine/hooks": "^5.0.0",
+    "@mantine/core": "5.0.0-alpha.19",
+    "@mantine/dropzone": "5.0.0-alpha.19",
+    "@mantine/hooks": "5.0.0-alpha.19",
     "@tauri-apps/api": "^1.0.1",
     "dom-to-image": "^2.6.0",
     "react": "^18.0.0",
