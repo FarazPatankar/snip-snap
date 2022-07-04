@@ -46,8 +46,8 @@ const useStyles = createStyles(theme => {
       height: 24,
       width: 24,
       borderRadius: 12,
-      boxShadow:
-        "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
+      border: `1px solid ${theme.colors.gray[4]}`,
+      boxShadow: theme.shadows.md,
     },
     kbd: {
       height: 20,
@@ -69,7 +69,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   return (
     <Navbar width={{ base: 300 }} p="md" className={classes.navbar}>
       <Navbar.Section>
-        <Stack spacing="lg">
+        <Stack spacing="xl">
           <Group position="apart">
             <Title order={2} className={classes.title}>
               SnipSnap
