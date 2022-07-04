@@ -11,7 +11,6 @@ import {
   MantineNumberSize,
   MANTINE_SIZES,
   Stack,
-  useMantineTheme,
 } from "@mantine/core";
 import { writeBinaryFile } from "@tauri-apps/api/fs";
 import { save } from "@tauri-apps/api/dialog";
@@ -43,7 +42,6 @@ const useStyles = createStyles(theme => {
 
 const App = () => {
   const { classes } = useStyles();
-  const theme = useMantineTheme();
 
   const wrapper = useRef<HTMLDivElement | null>(null);
   const [initialImage, setInitialImage] = useState<null | string>(null);
@@ -170,9 +168,14 @@ const App = () => {
                 <Image
                   src={initialImage}
                   radius={imageStyles.radius}
-                  sx={{
-                    boxShadow: theme.shadows[imageStyles.shadow],
-                  }}
+                  styles={theme => ({
+                    root: {
+                      borderRadius: theme.radius[imageStyles.radius],
+                    },
+                    image: {
+                      boxShadow: theme.shadows[imageStyles.shadow],
+                    },
+                  })}
                 />
               </Container>
             </Center>
