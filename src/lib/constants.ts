@@ -1,12 +1,17 @@
 import { MantineNumberSize, MANTINE_SIZES } from "@mantine/core";
 
-export const PADDING_OPTIONS = MANTINE_SIZES;
+/**
+ * Remove "xs" size from the list of sizes.
+ */
+const CUSTOM_SIZES = MANTINE_SIZES.slice(1);
+
+export const PADDING_OPTIONS = CUSTOM_SIZES;
 export const DEFAULT_PADDING = PADDING_OPTIONS[2];
 
-export const RADIUS_OPTIONS = MANTINE_SIZES;
+export const RADIUS_OPTIONS = CUSTOM_SIZES;
 export const DEFAULT_RADIUS = PADDING_OPTIONS[2];
 
-export const SHADOW_OPTIONS = MANTINE_SIZES;
+export const SHADOW_OPTIONS = CUSTOM_SIZES;
 export const DEFAULT_SHADOW = SHADOW_OPTIONS[2];
 
 export const GRADIENT_OPTIONS = [
