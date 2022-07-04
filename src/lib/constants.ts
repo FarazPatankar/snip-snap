@@ -59,4 +59,5 @@ export const KEYBINDINGS = {
   toggleShadow: "S",
   toggleBackground: "B",
   saveImage: "mod+S",
+  reset: "mod+R",
 };

@@ -146,6 +146,7 @@ const App = () => {
         }),
     ],
     [KEYBINDINGS.saveImage, onSave],
+    [KEYBINDINGS.reset, () => setInitialImage(null)],
   ]);
 
   return (
@@ -175,9 +176,12 @@ const App = () => {
                 />
               </Container>
             </Center>
-            <Group>
-              <Kbd>Copy: Cmd + C</Kbd>
-              <Kbd>Save: Cmd + S</Kbd>
+            <Group position="apart">
+              <Group>
+                <Kbd>Copy: Cmd + C</Kbd>
+                <Kbd>Save: Cmd + S</Kbd>
+              </Group>
+              <Kbd>Reset: Cmd + R</Kbd>
             </Group>
           </>
         ) : (
