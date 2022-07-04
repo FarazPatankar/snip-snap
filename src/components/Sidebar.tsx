@@ -1,7 +1,6 @@
 import {
   Center,
   Chip,
-  Chips,
   Code,
   createStyles,
   Group,
@@ -80,19 +79,17 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
         <Text className={classes.sectionTitle}>{title}</Text>
         <Kbd className={classes.kbd}>{keybinding}</Kbd>
       </Group>
-      <Chips
-        size="xs"
+      <Chip.Group
         color="pink"
-        variant="outline"
         value={value}
         onChange={value => onChange(value as MantineSize)}
       >
         {options.map(option => (
-          <Chip key={option} value={option}>
+          <Chip key={option} value={option} size="xs" variant="outline">
             {option}
           </Chip>
         ))}
-      </Chips>
+      </Chip.Group>
     </Stack>
   );
 };
