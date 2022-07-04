@@ -114,6 +114,11 @@ const App = () => {
       return;
     }
 
+    const element = wrapper.current;
+    const scale = window.devicePixelRatio;
+    const height = element.offsetHeight * scale;
+    const width = element.offsetWidth * scale;
+
     try {
       const desktopPath = await desktopDir();
       const selectedPath = await save({
@@ -121,7 +126,17 @@ const App = () => {
         filters: [{ name: "Image", extensions: ["png"] }],
       });
 
-      const blob = await domtoimage.toBlob(wrapper.current);
+      const blob = await domtoimage.toBlob(wrapper.current, {
+        height,
+        width,
+        style: {
+          transform: "scale(" + scale + ")",
+          transformOrigin: "top left",
+          width: width + "px",
+          height: height + "px",
+        },
+      });
+
       const buffer = await blob.arrayBuffer();
       await writeBinaryFile({
         contents: new Uint8Array(buffer),
@@ -153,7 +168,9 @@ const App = () => {
                 <Image
                   src={initialImage}
                   radius={imageStyles.radius}
-                  sx={{ boxShadow: theme.shadows[imageStyles.shadow] }}
+                  sx={{
+                    boxShadow: theme.shadows[imageStyles.shadow],
+                  }}
                 />
               </Container>
             </Center>
