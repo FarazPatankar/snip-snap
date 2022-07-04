@@ -13,7 +13,8 @@ import {
   Stack,
   useMantineTheme,
 } from "@mantine/core";
-import { writeBinaryFile, BaseDirectory } from "@tauri-apps/api/fs";
+import { writeBinaryFile } from "@tauri-apps/api/fs";
+import { save } from "@tauri-apps/api/dialog";
 
 import { Dropzone } from "./components/Dropzone";
 import { Sidebar } from "./components/Sidebar";
@@ -27,6 +28,7 @@ import {
   SHADOW_OPTIONS,
 } from "./lib/constants";
 import { useHotkeys } from "@mantine/hooks";
+import { desktopDir } from "@tauri-apps/api/path";
 
 const useStyles = createStyles(theme => {
   return {
@@ -113,10 +115,17 @@ const App = () => {
     }
 
     try {
+      const desktopPath = await desktopDir();
+      const selectedPath = await save({
+        defaultPath: desktopPath,
+        filters: [{ name: "Image", extensions: ["png"] }],
+      });
+
       const blob = await domtoimage.toBlob(wrapper.current);
       const buffer = await blob.arrayBuffer();
-      await writeBinaryFile("tauri-image.png", new Uint8Array(buffer), {
-        dir: BaseDirectory.Desktop,
+      await writeBinaryFile({
+        contents: new Uint8Array(buffer),
+        path: selectedPath,
       });
     } catch (error) {
       console.log(error);
