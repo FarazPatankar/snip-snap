@@ -1,7 +1,13 @@
-import { Center, createStyles, Stack, Text, Title } from "@mantine/core";
+import { createStyles, Stack, Text, Title } from "@mantine/core";
 import { Dropzone as MantineDropzone, MIME_TYPES } from "@mantine/dropzone";
 import { message } from "@tauri-apps/api/dialog";
+import { listen } from "@tauri-apps/api/event";
+import { convertFileSrc } from "@tauri-apps/api/tauri";
+import { useEffect } from "react";
+
 import { ImageIcon } from "./Icons";
+
+const SUPPORTED_FILE_TYPES = [MIME_TYPES.jpeg, MIME_TYPES.png, MIME_TYPES.webp];
 
 const useStyles = createStyles(theme => {
   return {
@@ -17,15 +23,62 @@ const useStyles = createStyles(theme => {
   };
 });
 
+const isValidFileExtenstion = (name: string) => {
+  const extension = name.split(".").pop();
+  if (extension == null) {
+    return false;
+  }
+
+  const validExtensions = SUPPORTED_FILE_TYPES.map(ext =>
+    ext.split("/").pop(),
+  ) as string[];
+
+  return validExtensions.includes(extension);
+};
+
 interface DropzoneProps {
   setImage: React.Dispatch<React.SetStateAction<string | null>>;
 }
 export const Dropzone: React.FC<DropzoneProps> = ({ setImage }) => {
   const { classes } = useStyles();
 
+  useEffect(() => {
+    const unlisten = listen("tauri://file-drop", async event => {
+      const payload = event.payload as string[];
+
+      if (payload.length !== 1) {
+        await message("Please drop only one file", {
+          title: "Error",
+          type: "error",
+        });
+        return;
+      }
+
+      const [file] = payload;
+      const isValid = isValidFileExtenstion(file);
+      if (!isValid) {
+        await message(
+          `The supported formats are: ${SUPPORTED_FILE_TYPES.join(", ")}`,
+          {
+            title: "Invalid file format",
+            type: "error",
+          },
+        );
+        return;
+      }
+
+      const data = convertFileSrc(file);
+      setImage(data);
+    });
+
+    return () => {
+      unlisten.then(f => f());
+    };
+  }, []);
+
   return (
     <MantineDropzone
-      accept={[MIME_TYPES.jpeg, MIME_TYPES.png, MIME_TYPES.webp]}
+      accept={SUPPORTED_FILE_TYPES}
       onDrop={files => {
         const [file] = files;
         const obj = URL.createObjectURL(file);
