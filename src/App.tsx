@@ -2,12 +2,12 @@ import { useRef, useState } from "react";
 import domtoimage from "dom-to-image";
 import {
   AppShell,
-  Button,
   Center,
   Container,
   createStyles,
   Group,
   Image,
+  Kbd,
   MantineNumberSize,
   MANTINE_SIZES,
   Stack,
@@ -70,45 +70,6 @@ const App = () => {
     });
   };
 
-  useHotkeys([
-    [
-      KEYBINDINGS.togglePadding,
-      () =>
-        toggleProperty({
-          collection: PADDING_OPTIONS,
-          key: "padding",
-          value: imageStyles.padding,
-        }),
-    ],
-    [
-      KEYBINDINGS.toggleRadius,
-      () =>
-        toggleProperty({
-          collection: RADIUS_OPTIONS,
-          key: "radius",
-          value: imageStyles.radius,
-        }),
-    ],
-    [
-      KEYBINDINGS.toggleBackground,
-      () =>
-        toggleProperty({
-          collection: GRADIENT_OPTIONS,
-          key: "gradient",
-          value: imageStyles.gradient,
-        }),
-    ],
-    [
-      KEYBINDINGS.toggleShadow,
-      () =>
-        toggleProperty({
-          collection: SHADOW_OPTIONS,
-          key: "shadow",
-          value: imageStyles.shadow,
-        }),
-    ],
-  ]);
-
   const onSave = async () => {
     if (wrapper.current == null) {
       return;
@@ -147,6 +108,46 @@ const App = () => {
     }
   };
 
+  useHotkeys([
+    [
+      KEYBINDINGS.togglePadding,
+      () =>
+        toggleProperty({
+          collection: PADDING_OPTIONS,
+          key: "padding",
+          value: imageStyles.padding,
+        }),
+    ],
+    [
+      KEYBINDINGS.toggleRadius,
+      () =>
+        toggleProperty({
+          collection: RADIUS_OPTIONS,
+          key: "radius",
+          value: imageStyles.radius,
+        }),
+    ],
+    [
+      KEYBINDINGS.toggleBackground,
+      () =>
+        toggleProperty({
+          collection: GRADIENT_OPTIONS,
+          key: "gradient",
+          value: imageStyles.gradient,
+        }),
+    ],
+    [
+      KEYBINDINGS.toggleShadow,
+      () =>
+        toggleProperty({
+          collection: SHADOW_OPTIONS,
+          key: "shadow",
+          value: imageStyles.shadow,
+        }),
+    ],
+    [KEYBINDINGS.saveImage, onSave],
+  ]);
+
   return (
     <AppShell
       padding="md"
@@ -174,11 +175,9 @@ const App = () => {
                 />
               </Container>
             </Center>
-            <Group position="apart">
-              <Button onClick={() => setInitialImage(null)}>Reset</Button>
-              <Group>
-                <Button onClick={onSave}>Save</Button>
-              </Group>
+            <Group>
+              <Kbd>Copy: Cmd + C</Kbd>
+              <Kbd>Save: Cmd + S</Kbd>
             </Group>
           </>
         ) : (

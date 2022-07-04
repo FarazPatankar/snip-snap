@@ -58,4 +58,5 @@ export const KEYBINDINGS = {
   toggleRadius: "R",
   toggleShadow: "S",
   toggleBackground: "B",
+  saveImage: "mod+S",
 };
