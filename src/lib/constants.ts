@@ -35,7 +35,7 @@ export const GRADIENT_OPTIONS = [
   "radial-gradient(circle farthest-corner at 10% 20%, rgba(14,174,87,1) 0%, rgba(12,116,117,1) 90%)",
   "linear-gradient(25deg,#d64c7f,#ee4758 50%)",
   "radial-gradient(circle farthest-corner at 10% 20%, rgba(255,200,124,1) 0%, rgba(252,251,121,1) 90%)",
-  "radial-gradient(circle farthest-corner at 10% 20%, rgba(253,239,132,1) 0%, rgba(247,198,169,1) 54.2%, rgba(21,186,196,1) 100.3%;",
+  "linear-gradient(132deg, #F4D03F 0%, #16A085 100%)",
 ];
 export const DEFAULT_GRADIENT = GRADIENT_OPTIONS[0];
 
