@@ -18,6 +18,7 @@ import {
   DefaultImageStyles,
   RADIUS_OPTIONS,
   KEYBINDINGS,
+  SHADOW_OPTIONS,
 } from "../lib/constants";
 import { CheckIcon } from "./Icons";
 
@@ -119,6 +120,31 @@ export const Sidebar: React.FC<SidebarProps> = ({
               }
             >
               {RADIUS_OPTIONS.map(value => (
+                <Chip key={value} value={value}>
+                  {value}
+                </Chip>
+              ))}
+            </Chips>
+          </Stack>
+
+          <Stack spacing="xs">
+            <Group spacing="xs">
+              <Text className={classes.sectionTitle}>Shadow</Text>
+              <Kbd className={classes.kbd}>{KEYBINDINGS.toggleShadow}</Kbd>
+            </Group>
+            <Chips
+              size="xs"
+              color="pink"
+              variant="outline"
+              value={imageStyles.shadow.toString()}
+              onChange={value =>
+                setImageStyles({
+                  ...imageStyles,
+                  shadow: value as MantineNumberSize,
+                })
+              }
+            >
+              {SHADOW_OPTIONS.map(value => (
                 <Chip key={value} value={value}>
                   {value}
                 </Chip>

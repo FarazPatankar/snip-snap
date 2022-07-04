@@ -11,6 +11,7 @@ import {
   MantineNumberSize,
   MANTINE_SIZES,
   Stack,
+  useMantineTheme,
 } from "@mantine/core";
 import { writeBinaryFile, BaseDirectory } from "@tauri-apps/api/fs";
 
@@ -23,6 +24,7 @@ import {
   KEYBINDINGS,
   PADDING_OPTIONS,
   RADIUS_OPTIONS,
+  SHADOW_OPTIONS,
 } from "./lib/constants";
 import { useHotkeys } from "@mantine/hooks";
 
@@ -39,6 +41,7 @@ const useStyles = createStyles(theme => {
 
 const App = () => {
   const { classes } = useStyles();
+  const theme = useMantineTheme();
 
   const wrapper = useRef<HTMLDivElement | null>(null);
   const [initialImage, setInitialImage] = useState<null | string>(null);
@@ -93,6 +96,15 @@ const App = () => {
           value: imageStyles.gradient,
         }),
     ],
+    [
+      KEYBINDINGS.toggleShadow,
+      () =>
+        toggleProperty({
+          collection: SHADOW_OPTIONS,
+          key: "shadow",
+          value: imageStyles.shadow,
+        }),
+    ],
   ]);
 
   const onSave = async () => {
@@ -125,11 +137,15 @@ const App = () => {
               <Container
                 ref={wrapper}
                 p={imageStyles.padding}
-                style={{
+                sx={{
                   background: imageStyles.gradient,
                 }}
               >
-                <Image radius={imageStyles.radius} src={initialImage} />
+                <Image
+                  src={initialImage}
+                  radius={imageStyles.radius}
+                  sx={{ boxShadow: theme.shadows[imageStyles.shadow] }}
+                />
               </Container>
             </Center>
             <Group position="apart">
