@@ -6,7 +6,7 @@ import {
   createStyles,
   Group,
   Kbd,
-  MantineNumberSize,
+  MantineSize,
   Navbar,
   Stack,
   Text,
@@ -57,6 +57,46 @@ const useStyles = createStyles(theme => {
   };
 });
 
+interface SidebarItemProps {
+  title: string;
+  keybinding: string;
+  value: string;
+  options: MantineSize[];
+  onChange: (value: MantineSize) => void;
+}
+
+const SidebarItem: React.FC<SidebarItemProps> = ({
+  title,
+  keybinding,
+  value,
+  options,
+  onChange,
+}) => {
+  const { classes } = useStyles();
+
+  return (
+    <Stack spacing="xs">
+      <Group spacing="xs">
+        <Text className={classes.sectionTitle}>{title}</Text>
+        <Kbd className={classes.kbd}>{keybinding}</Kbd>
+      </Group>
+      <Chips
+        size="xs"
+        color="pink"
+        variant="outline"
+        value={value}
+        onChange={value => onChange(value as MantineSize)}
+      >
+        {options.map(option => (
+          <Chip key={option} value={option}>
+            {option}
+          </Chip>
+        ))}
+      </Chips>
+    </Stack>
+  );
+};
+
 interface SidebarProps {
   imageStyles: DefaultImageStyles;
   setImageStyles: React.Dispatch<React.SetStateAction<DefaultImageStyles>>;
@@ -77,80 +117,35 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <Code className={classes.version}>0.0.1</Code>
           </Group>
 
-          <Stack spacing="xs">
-            <Group spacing="xs">
-              <Text className={classes.sectionTitle}>Padding</Text>
-              <Kbd className={classes.kbd}>{KEYBINDINGS.togglePadding}</Kbd>
-            </Group>
-            <Chips
-              size="xs"
-              color="pink"
-              variant="outline"
-              value={imageStyles.padding.toString()}
-              onChange={value =>
-                setImageStyles({
-                  ...imageStyles,
-                  padding: value as MantineNumberSize,
-                })
-              }
-            >
-              {PADDING_OPTIONS.map(value => (
-                <Chip key={value} value={value}>
-                  {value}
-                </Chip>
-              ))}
-            </Chips>
-          </Stack>
+          <SidebarItem
+            title="Padding"
+            keybinding={KEYBINDINGS.togglePadding}
+            value={imageStyles.padding.toString()}
+            options={PADDING_OPTIONS}
+            onChange={value =>
+              setImageStyles({ ...imageStyles, padding: value })
+            }
+          />
 
-          <Stack spacing="xs">
-            <Group spacing="xs">
-              <Text className={classes.sectionTitle}>Radius</Text>
-              <Kbd className={classes.kbd}>{KEYBINDINGS.toggleRadius}</Kbd>
-            </Group>
-            <Chips
-              size="xs"
-              color="pink"
-              variant="outline"
-              value={imageStyles.radius.toString()}
-              onChange={value =>
-                setImageStyles({
-                  ...imageStyles,
-                  radius: value as MantineNumberSize,
-                })
-              }
-            >
-              {RADIUS_OPTIONS.map(value => (
-                <Chip key={value} value={value}>
-                  {value}
-                </Chip>
-              ))}
-            </Chips>
-          </Stack>
+          <SidebarItem
+            title="Radius"
+            keybinding={KEYBINDINGS.toggleRadius}
+            value={imageStyles.radius.toString()}
+            options={RADIUS_OPTIONS}
+            onChange={value =>
+              setImageStyles({ ...imageStyles, radius: value })
+            }
+          />
 
-          <Stack spacing="xs">
-            <Group spacing="xs">
-              <Text className={classes.sectionTitle}>Shadow</Text>
-              <Kbd className={classes.kbd}>{KEYBINDINGS.toggleShadow}</Kbd>
-            </Group>
-            <Chips
-              size="xs"
-              color="pink"
-              variant="outline"
-              value={imageStyles.shadow.toString()}
-              onChange={value =>
-                setImageStyles({
-                  ...imageStyles,
-                  shadow: value as MantineNumberSize,
-                })
-              }
-            >
-              {SHADOW_OPTIONS.map(value => (
-                <Chip key={value} value={value}>
-                  {value}
-                </Chip>
-              ))}
-            </Chips>
-          </Stack>
+          <SidebarItem
+            title="Shadow"
+            keybinding={KEYBINDINGS.toggleShadow}
+            value={imageStyles.shadow.toString()}
+            options={SHADOW_OPTIONS}
+            onChange={value =>
+              setImageStyles({ ...imageStyles, shadow: value })
+            }
+          />
 
           <Stack spacing="xs">
             <Group spacing="xs">

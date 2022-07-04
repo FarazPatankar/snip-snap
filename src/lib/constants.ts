@@ -1,4 +1,4 @@
-import { MantineNumberSize, MANTINE_SIZES } from "@mantine/core";
+import { MantineSize, MANTINE_SIZES } from "@mantine/core";
 
 /**
  * Remove "xs" size from the list of sizes.
@@ -24,9 +24,9 @@ export const GRADIENT_OPTIONS = [
 export const DEFAULT_GRADIENT = GRADIENT_OPTIONS[0];
 
 export interface DefaultImageStyles {
-  padding: MantineNumberSize;
-  radius: MantineNumberSize;
-  shadow: MantineNumberSize;
+  padding: MantineSize;
+  radius: MantineSize;
+  shadow: MantineSize;
   gradient: string;
 }
 
