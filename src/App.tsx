@@ -12,8 +12,11 @@ import {
   MANTINE_SIZES,
   Stack,
 } from "@mantine/core";
+import { useHotkeys } from "@mantine/hooks";
 import { writeBinaryFile } from "@tauri-apps/api/fs";
 import { save } from "@tauri-apps/api/dialog";
+import { desktopDir } from "@tauri-apps/api/path";
+import { invoke } from "@tauri-apps/api/tauri";
 
 import { Dropzone } from "./components/Dropzone";
 import { Sidebar } from "./components/Sidebar";
@@ -26,8 +29,6 @@ import {
   RADIUS_OPTIONS,
   SHADOW_OPTIONS,
 } from "./lib/constants";
-import { useHotkeys } from "@mantine/hooks";
-import { desktopDir } from "@tauri-apps/api/path";
 
 const useStyles = createStyles(theme => {
   return {
@@ -79,12 +80,6 @@ const App = () => {
     const width = element.offsetWidth * scale;
 
     try {
-      const desktopPath = await desktopDir();
-      const selectedPath = await save({
-        defaultPath: desktopPath,
-        filters: [{ name: "Image", extensions: ["png"] }],
-      });
-
       const blob = await domtoimage.toBlob(wrapper.current, {
         height,
         width,
@@ -96,10 +91,34 @@ const App = () => {
         },
       });
 
+      const desktopPath = await desktopDir();
+      const selectedPath = await save({
+        defaultPath: desktopPath,
+        filters: [{ name: "Image", extensions: ["png"] }],
+      });
+
       const buffer = await blob.arrayBuffer();
       await writeBinaryFile({
         contents: new Uint8Array(buffer),
         path: selectedPath,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const onCopy = async () => {
+    if (wrapper.current == null) {
+      return;
+    }
+
+    try {
+      const data = await domtoimage.toPixelData(wrapper.current);
+
+      invoke("copy_image_to_clipboard", {
+        height: wrapper.current.offsetHeight,
+        width: wrapper.current.offsetWidth,
+        bytes: Array.from(data),
       });
     } catch (error) {
       console.log(error);
@@ -144,6 +163,7 @@ const App = () => {
         }),
     ],
     [KEYBINDINGS.saveImage, onSave],
+    [KEYBINDINGS.copyImage, onCopy],
     [KEYBINDINGS.reset, () => setInitialImage(null)],
   ]);
 
