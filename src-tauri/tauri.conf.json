@@ -7,7 +7,7 @@
     "distDir": "../dist"
   },
   "package": {
-    "productName": "snip-snap",
+    "productName": "SnipSnap",
     "version": "0.0.2"
   },
   "tauri": {
@@ -19,7 +19,7 @@
     },
     "bundle": {
       "active": true,
-      "category": "DeveloperTool",
+      "category": "GraphicsAndDesign",
       "copyright": "",
       "deb": {
         "depends": []
