@@ -92,6 +92,12 @@ export const Dropzone: React.FC<DropzoneProps> = ({ setImage }) => {
 
       setImage(assetUrl);
 
+      /**
+       * Wait here to ensure the file has been read
+       * before removing it.
+       */
+      await new Promise(resolve => setTimeout(resolve, 1500));
+
       await removeFile(filepath);
     } catch (error) {
       console.error(error);
