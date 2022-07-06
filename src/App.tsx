@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import domtoimage from "dom-to-image";
 import {
   AppShell,
@@ -17,6 +17,7 @@ import { writeBinaryFile } from "@tauri-apps/api/fs";
 import { save } from "@tauri-apps/api/dialog";
 import { desktopDir } from "@tauri-apps/api/path";
 import { invoke } from "@tauri-apps/api/tauri";
+import { type } from "@tauri-apps/api/os";
 
 import { Dropzone } from "./components/Dropzone";
 import { Sidebar } from "./components/Sidebar";
@@ -43,6 +44,7 @@ const useStyles = createStyles(theme => {
 
 const App = () => {
   const { classes } = useStyles();
+  const [modKey, setModKey] = useState("⌘");
 
   const wrapper = useRef<HTMLDivElement | null>(null);
   const [initialImage, setInitialImage] = useState<null | string>(null);
@@ -167,6 +169,16 @@ const App = () => {
     [KEYBINDINGS.reset, () => setInitialImage(null)],
   ]);
 
+  useEffect(() => {
+    const setModKeyForOs = async () => {
+      const os = await type();
+
+      setModKey(os === "Darwin" ? "⌘" : "Ctrl");
+    };
+
+    setModKeyForOs();
+  }, []);
+
   return (
     <AppShell
       padding="md"
@@ -201,10 +213,10 @@ const App = () => {
             </Center>
             <Group position="apart">
               <Group>
-                <Kbd>Copy: Cmd + C</Kbd>
-                <Kbd>Save: Cmd + S</Kbd>
+                <Kbd>Copy: {modKey} + C</Kbd>
+                <Kbd>Save: {modKey} + S</Kbd>
               </Group>
-              <Kbd>Reset: Cmd + R</Kbd>
+              <Kbd>Reset: {modKey} + R</Kbd>
             </Group>
           </>
         ) : (
