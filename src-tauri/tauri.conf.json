@@ -14,7 +14,12 @@
     "allowlist": {
       "all": true,
       "fs": {
-        "scope": ["$DESKTOP/**"]
+        "scope": ["*"]
+      },
+      "protocol": {
+        "all": false,
+        "asset": true,
+        "assetScope": ["*"]
       }
     },
     "bundle": {
@@ -32,7 +37,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "snip-snap",
+      "identifier": "com.farazpatankar.SnipSnap",
       "longDescription": "",
       "macOS": {
         "entitlements": null,
@@ -51,7 +56,7 @@
       }
     },
     "security": {
-      "csp": null
+      "csp": "default-src 'self'; img-src 'self' asset: https://asset.localhost"
     },
     "updater": {
       "active": false
