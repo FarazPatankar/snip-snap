@@ -1,9 +1,9 @@
 {
   "name": "snip-snap",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.2",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --port 9999",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "tauri": "tauri"
