@@ -116,7 +116,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <Title order={2} className={classes.title}>
               SnipSnap
             </Title>
-            <Code className={classes.version}>0.0.2</Code>
+            <Code className={classes.version}>0.0.3</Code>
           </Group>
 
           <SidebarItem
