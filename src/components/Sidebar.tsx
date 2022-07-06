@@ -80,12 +80,17 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
         <Kbd className={classes.kbd}>{keybinding}</Kbd>
       </Group>
       <Chip.Group
-        color="pink"
         value={value}
         onChange={value => onChange(value as MantineSize)}
       >
         {options.map(option => (
-          <Chip key={option} value={option} size="xs" variant="outline">
+          <Chip
+            key={option}
+            value={option}
+            size="xs"
+            variant="outline"
+            color="pink"
+          >
             {option}
           </Chip>
         ))}
