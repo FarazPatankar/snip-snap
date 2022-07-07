@@ -4,7 +4,6 @@ import { Dropzone as MantineDropzone, MIME_TYPES } from "@mantine/dropzone";
 import { useHotkeys } from "@mantine/hooks";
 import { message } from "@tauri-apps/api/dialog";
 import { listen } from "@tauri-apps/api/event";
-import { removeFile } from "@tauri-apps/api/fs";
 import { cacheDir } from "@tauri-apps/api/path";
 import { convertFileSrc, invoke } from "@tauri-apps/api/tauri";
 
@@ -23,6 +22,7 @@ const useStyles = createStyles(theme => {
     },
     text: {
       color: theme.colors.gray[5],
+      fontSize: theme.fontSizes.sm,
     },
   };
 });
@@ -129,9 +129,14 @@ export const Dropzone: React.FC<DropzoneProps> = ({ setImage }) => {
           <Stack align="center" spacing="xs" className={classes.container}>
             <ImageIcon />
             <Title order={3} align="center" className={classes.title}>
-              Drag and drop or click here to select files
+              Add an image
             </Title>
-            <Text className={classes.text}>Images go here</Text>
+            <Text className={classes.text} align="center">
+              Drag'n'drop or paste an image to begin. You can also click here
+              and select an image. We only support{" "}
+              {SUPPORTED_FILE_TYPES.map(ext => ext.split("/").pop()).join(", ")}{" "}
+              image formats at the moment.
+            </Text>
           </Stack>
         </MantineDropzone.Idle>
       </MantineDropzone>
