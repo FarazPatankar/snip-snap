@@ -93,12 +93,12 @@ export const Dropzone: React.FC<DropzoneProps> = ({ setImage }) => {
       setImage(assetUrl);
 
       /**
-       * Wait here to ensure the file has been read
-       * before removing it.
+       * TODO: Delete the file before the user closes the app.
+       * We cannot delete it now because we need it when the user
+       * tries to save the image.
+       *
+       * Unless we generate a base64 data URL?
        */
-      await new Promise(resolve => setTimeout(resolve, 1500));
-
-      await removeFile(filepath);
     } catch (error) {
       console.error(error);
     }
