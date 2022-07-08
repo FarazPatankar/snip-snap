@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import domtoimage from "dom-to-image";
 import {
   AppShell,
+  Box,
   Center,
-  Container,
   createStyles,
   Group,
   Image,
@@ -15,9 +14,10 @@ import {
 import { useHotkeys } from "@mantine/hooks";
 import { writeBinaryFile } from "@tauri-apps/api/fs";
 import { save } from "@tauri-apps/api/dialog";
-import { desktopDir } from "@tauri-apps/api/path";
+import { cacheDir, desktopDir } from "@tauri-apps/api/path";
 import { invoke } from "@tauri-apps/api/tauri";
 import { type } from "@tauri-apps/api/os";
+import { toBlob } from "html-to-image";
 
 import { Dropzone } from "./components/Dropzone";
 import { Sidebar } from "./components/Sidebar";
@@ -35,6 +35,7 @@ const useStyles = createStyles(theme => {
   return {
     container: {
       height: "100%",
+      width: "100%",
     },
     imageContainer: {
       flex: 1,
@@ -48,6 +49,10 @@ const App = () => {
 
   const wrapper = useRef<HTMLDivElement | null>(null);
   const [initialImage, setInitialImage] = useState<null | string>(null);
+  const [imageDimensions, setImageDimensions] = useState<null | {
+    height: number;
+    width: number;
+  }>(null);
 
   const [imageStyles, setImageStyles] =
     useState<DefaultImageStyles>(DEFAULT_IMAGE_STYLES);
@@ -71,38 +76,37 @@ const App = () => {
     });
   };
 
+  const getImageBuffer = async () => {
+    if (wrapper.current == null) {
+      throw new Error("Image container not found");
+    }
+
+    const blob = await toBlob(wrapper.current, {});
+    if (blob == null) {
+      throw new Error("Failed to generate image");
+    }
+
+    const buffer = await blob.arrayBuffer();
+    return new Uint8Array(buffer);
+  };
+
   const onSave = async () => {
     if (wrapper.current == null) {
       return;
     }
 
-    const element = wrapper.current;
-    const scale = window.devicePixelRatio;
-    const height = element.offsetHeight * scale;
-    const width = element.offsetWidth * scale;
-
     try {
-      const blob = await domtoimage.toBlob(wrapper.current, {
-        height,
-        width,
-        style: {
-          transform: "scale(" + scale + ")",
-          transformOrigin: "top left",
-          width: width + "px",
-          height: height + "px",
-        },
-      });
+      const contents = await getImageBuffer();
 
       const desktopPath = await desktopDir();
-      const selectedPath = await save({
+      const path = await save({
         defaultPath: desktopPath,
         filters: [{ name: "Image", extensions: ["png"] }],
       });
 
-      const buffer = await blob.arrayBuffer();
       await writeBinaryFile({
-        contents: new Uint8Array(buffer),
-        path: selectedPath,
+        contents,
+        path,
       });
     } catch (error) {
       console.log(error);
@@ -110,17 +114,19 @@ const App = () => {
   };
 
   const onCopy = async () => {
-    if (wrapper.current == null) {
-      return;
-    }
-
     try {
-      const data = await domtoimage.toPixelData(wrapper.current);
+      const contents = await getImageBuffer();
 
-      invoke("copy_image_to_clipboard", {
-        height: wrapper.current.offsetHeight,
-        width: wrapper.current.offsetWidth,
-        bytes: Array.from(data),
+      const cacheDirPath = await cacheDir();
+      const path = (await invoke("get_image_path", { cacheDirPath })) as string;
+
+      await writeBinaryFile({
+        contents,
+        path,
+      });
+
+      await invoke("copy_image_to_clipboard", {
+        imagePath: path,
       });
     } catch (error) {
       console.log(error);
@@ -190,15 +196,24 @@ const App = () => {
         {initialImage ? (
           <>
             <Center className={classes.imageContainer}>
-              <Container
+              <Box
                 ref={wrapper}
                 p={imageStyles.padding}
                 sx={{
                   background: imageStyles.gradient,
+                  maxWidth: "100%",
+                  width: imageDimensions ? imageDimensions.width / 2 : "auto",
                 }}
               >
                 <Image
                   src={initialImage}
+                  onLoad={event => {
+                    const image = event.target as HTMLImageElement;
+                    setImageDimensions({
+                      height: image.naturalHeight,
+                      width: image.naturalWidth,
+                    });
+                  }}
                   radius={imageStyles.radius}
                   styles={theme => ({
                     root: {
@@ -209,7 +224,7 @@ const App = () => {
                     },
                   })}
                 />
-              </Container>
+              </Box>
             </Center>
             <Group position="apart">
               <Group>

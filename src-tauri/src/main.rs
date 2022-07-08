@@ -3,23 +3,45 @@
   windows_subsystem = "windows"
 )]
 
-use std::fs;
+use std::{fs, sync::Arc};
 use arboard::{Clipboard, ImageData};
 use image::{DynamicImage, ImageBuffer};
+use tauri::Config;
 
-#[tauri::command]
-fn copy_image_to_clipboard(height: usize, width: usize, bytes: Vec<u8>) {
-  let mut ctx = Clipboard::new().unwrap();
+fn get_active_image_directory(config: Arc<Config>, directory: &str) -> String {
+  let identifier = &config.tauri.bundle.identifier;
 
-  let img_data = ImageData { width, height, bytes: bytes.into() };
-  ctx.set_image(img_data).unwrap();
+  return directory.to_owned() + identifier
+}
+
+fn get_active_image_path(directory: &str) -> String {
+  return directory.to_owned() + "/active-image.png";
 }
 
 fn ensure_dir_exists(path: &str) {
   if !fs::metadata(path).is_ok() {
-    println!("Creating& directory: {}", path);
     fs::create_dir(path).unwrap();
   }
+}
+
+#[tauri::command]
+fn get_image_path(app_handle: tauri::AppHandle, cache_dir_path: String) -> String {
+  let directory = get_active_image_directory(app_handle.config(), &cache_dir_path);
+  ensure_dir_exists(&directory);
+
+  let active_image_path = get_active_image_path(&directory);
+
+  return active_image_path;
+}
+
+#[tauri::command]
+fn copy_image_to_clipboard(image_path: String) {
+  let img = image::open(image_path).unwrap();
+
+  let mut ctx = Clipboard::new().unwrap();
+
+  let img_data = ImageData { width: img.width() as usize, height:img.height() as usize, bytes: img.as_bytes().into() };
+  ctx.set_image(img_data).unwrap();
 }
 
 fn save_image(img: &DynamicImage, path: &str) {
@@ -28,9 +50,6 @@ fn save_image(img: &DynamicImage, path: &str) {
 
 #[tauri::command]
 fn save_image_from_clipboard(app_handle: tauri::AppHandle, cache_dir_path: String) -> Result<String, String> {
-  let config = app_handle.config();
-  let identifier = &config.tauri.bundle.identifier;
-
   let mut ctx = Clipboard::new().unwrap();
   let response = ctx.get_image();
   if response.is_err() {
@@ -45,15 +64,13 @@ fn save_image_from_clipboard(app_handle: tauri::AppHandle, cache_dir_path: Strin
     ).unwrap();
     let imgbuf = DynamicImage::ImageRgba8(imgbuf);
 
-    // Create directory if it does not already exist
-    let directory = cache_dir_path + identifier;
+    let directory = get_active_image_directory(app_handle.config(), &cache_dir_path);
     ensure_dir_exists(&directory);
 
-    // Save image to disk
-    let filepath = directory + "/temp-snip-snap.png";
-    save_image(&imgbuf, &filepath);
+    let active_image_path = get_active_image_path(&directory);
+    save_image(&imgbuf, &active_image_path);
 
-    return Ok(filepath);
+    return Ok(active_image_path);
   }
 }
 
@@ -65,7 +82,7 @@ fn main() {
     } else {
       tauri::Menu::default()
     })
-    .invoke_handler(tauri::generate_handler![copy_image_to_clipboard, save_image_from_clipboard])
+    .invoke_handler(tauri::generate_handler![copy_image_to_clipboard, save_image_from_clipboard, get_image_path])
     .run(context)
     .expect("error while running tauri application");
 }
