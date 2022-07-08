@@ -16,6 +16,7 @@ const useStyles = createStyles(theme => {
   return {
     container: {
       color: theme.colors.pink[6],
+      width: theme.breakpoints.sm,
     },
     title: {
       color: theme.colors.pink[6],
