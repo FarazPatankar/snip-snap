@@ -56,6 +56,10 @@ const App = () => {
 
   const [imageStyles, setImageStyles] =
     useState<DefaultImageStyles>(DEFAULT_IMAGE_STYLES);
+  const [finalImage, setFinalImage] = useState<null | {
+    blob: Blob;
+    src: string;
+  }>(null);
 
   const toggleProperty = ({
     collection,
@@ -77,24 +81,15 @@ const App = () => {
   };
 
   const getImageBuffer = async () => {
-    if (wrapper.current == null) {
-      throw new Error("Image container not found");
+    if (finalImage == null) {
+      throw new Error("Unable to generate image, please start over");
     }
 
-    const blob = await toBlob(wrapper.current, {});
-    if (blob == null) {
-      throw new Error("Failed to generate image");
-    }
-
-    const buffer = await blob.arrayBuffer();
+    const buffer = await finalImage.blob.arrayBuffer();
     return new Uint8Array(buffer);
   };
 
   const onSave = async () => {
-    if (wrapper.current == null) {
-      return;
-    }
-
     try {
       const contents = await getImageBuffer();
 
@@ -172,7 +167,13 @@ const App = () => {
     ],
     [KEYBINDINGS.saveImage, onSave],
     [KEYBINDINGS.copyImage, onCopy],
-    [KEYBINDINGS.reset, () => setInitialImage(null)],
+    [
+      KEYBINDINGS.reset,
+      () => {
+        setInitialImage(null);
+        setFinalImage(null);
+      },
+    ],
   ]);
 
   useEffect(() => {
@@ -185,6 +186,29 @@ const App = () => {
     setModKeyForOs();
   }, []);
 
+  useEffect(() => {
+    const generateImage = async () => {
+      const blob = await toBlob(wrapper.current!, {});
+      if (blob == null) {
+        return;
+      }
+
+      const image = URL.createObjectURL(blob);
+      setFinalImage({ blob, src: image });
+    };
+
+    if (
+      (initialImage == null || wrapper.current == null) &&
+      finalImage == null
+    ) {
+      return;
+    }
+
+    setFinalImage(null);
+
+    generateImage();
+  }, [initialImage, wrapper.current, imageStyles]);
+
   return (
     <AppShell
       padding="md"
@@ -193,38 +217,58 @@ const App = () => {
       }
     >
       <Stack className={classes.container}>
-        {initialImage ? (
+        {initialImage == null && finalImage == null ? (
+          <Center className={classes.container}>
+            <Dropzone setImage={setInitialImage} />
+          </Center>
+        ) : (
           <>
             <Center className={classes.imageContainer}>
-              <Box
-                ref={wrapper}
-                p={imageStyles.padding}
-                sx={{
-                  background: imageStyles.gradient,
-                  maxWidth: "100%",
-                  width: imageDimensions ? imageDimensions.width / 2 : "auto",
-                }}
-              >
-                <Image
-                  src={initialImage}
-                  onLoad={event => {
-                    const image = event.target as HTMLImageElement;
-                    setImageDimensions({
-                      height: image.naturalHeight,
-                      width: image.naturalWidth,
-                    });
+              {finalImage != null ? (
+                <Box
+                  sx={{
+                    width: imageDimensions
+                      ? imageDimensions.width / window.devicePixelRatio
+                      : "auto",
                   }}
-                  radius={imageStyles.radius}
-                  styles={theme => ({
-                    root: {
-                      borderRadius: theme.radius[imageStyles.radius],
-                    },
-                    image: {
-                      boxShadow: theme.shadows[imageStyles.shadow],
-                    },
-                  })}
-                />
-              </Box>
+                >
+                  <Image src={finalImage.src} />
+                </Box>
+              ) : (
+                initialImage != null && (
+                  <Box
+                    ref={wrapper}
+                    sx={{
+                      background: imageStyles.gradient,
+                      maxWidth: "100%",
+                      width: imageDimensions
+                        ? imageDimensions.width / window.devicePixelRatio
+                        : "auto",
+                    }}
+                  >
+                    <Image
+                      src={initialImage}
+                      onLoad={event => {
+                        const image = event.target as HTMLImageElement;
+                        setImageDimensions({
+                          height: image.naturalHeight,
+                          width: image.naturalWidth,
+                        });
+                      }}
+                      radius={imageStyles.radius}
+                      p={imageStyles.padding}
+                      styles={theme => ({
+                        root: {
+                          borderRadius: theme.radius[imageStyles.radius],
+                        },
+                        image: {
+                          boxShadow: theme.shadows[imageStyles.shadow],
+                        },
+                      })}
+                    />
+                  </Box>
+                )
+              )}
             </Center>
             <Group position="apart">
               <Group>
@@ -234,10 +278,6 @@ const App = () => {
               <Kbd>Reset: {modKey} + R</Kbd>
             </Group>
           </>
-        ) : (
-          <Center className={classes.container}>
-            <Dropzone setImage={setInitialImage} />
-          </Center>
         )}
       </Stack>
     </AppShell>
