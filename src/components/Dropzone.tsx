@@ -92,14 +92,6 @@ export const Dropzone: React.FC<DropzoneProps> = ({ setImage }) => {
       const assetUrl = convertFileSrc(filepath);
 
       setImage(assetUrl);
-
-      /**
-       * TODO: Delete the file before the user closes the app.
-       * We cannot delete it now because we need it when the user
-       * tries to save the image.
-       *
-       * Unless we generate a base64 data URL?
-       */
     } catch (error) {
       console.error(error);
     }
