@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { toBlob } from "html-to-image";
 import {
   AppShell,
   Box,
@@ -12,12 +13,12 @@ import {
   Stack,
 } from "@mantine/core";
 import { useHotkeys } from "@mantine/hooks";
-import { writeBinaryFile } from "@tauri-apps/api/fs";
+import { removeFile, writeBinaryFile } from "@tauri-apps/api/fs";
 import { save } from "@tauri-apps/api/dialog";
 import { cacheDir, desktopDir } from "@tauri-apps/api/path";
 import { invoke } from "@tauri-apps/api/tauri";
 import { type } from "@tauri-apps/api/os";
-import { toBlob } from "html-to-image";
+import { appWindow } from "@tauri-apps/api/window";
 
 import { Dropzone } from "./components/Dropzone";
 import { Sidebar } from "./components/Sidebar";
@@ -128,6 +129,23 @@ const App = () => {
     }
   };
 
+  const removeImage = async () => {
+    try {
+      const cacheDirPath = await cacheDir();
+      const path = (await invoke("get_image_path", { cacheDirPath })) as string;
+
+      await removeFile(path);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const onReset = async () => {
+    setInitialImage(null);
+    setFinalImage(null);
+    await removeImage();
+  };
+
   useHotkeys([
     [
       KEYBINDINGS.togglePadding,
@@ -167,13 +185,7 @@ const App = () => {
     ],
     [KEYBINDINGS.saveImage, onSave],
     [KEYBINDINGS.copyImage, onCopy],
-    [
-      KEYBINDINGS.reset,
-      () => {
-        setInitialImage(null);
-        setFinalImage(null);
-      },
-    ],
+    [KEYBINDINGS.reset, onReset],
   ]);
 
   useEffect(() => {
@@ -188,7 +200,11 @@ const App = () => {
 
   useEffect(() => {
     const generateImage = async () => {
-      const blob = await toBlob(wrapper.current!, {});
+      if (wrapper.current == null) {
+        return;
+      }
+
+      const blob = await toBlob(wrapper.current);
       if (blob == null) {
         return;
       }
@@ -208,6 +224,18 @@ const App = () => {
 
     generateImage();
   }, [initialImage, wrapper.current, imageStyles]);
+
+  useEffect(() => {
+    const unlisten = appWindow.listen("tauri://close-requested", async () => {
+      await removeImage();
+
+      await appWindow.close();
+    });
+
+    return () => {
+      unlisten.then(f => f());
+    };
+  }, []);
 
   return (
     <AppShell
