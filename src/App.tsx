@@ -204,6 +204,17 @@ const App = () => {
         return;
       }
 
+      /**
+       * This is not a mistake. Well, in a way, it is.
+       *
+       * There is a bug in the core library where the image
+       * is sometimes missing on the first render. So we call
+       * this function twice hoping the image generation will
+       * work.
+       *
+       * https://github.com/tsayen/dom-to-image/issues/343
+       */
+      await toBlob(wrapper.current);
       const blob = await toBlob(wrapper.current);
       if (blob == null) {
         return;
